@@ -1,83 +1,81 @@
-import { App, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
+import { Plugin, WorkspaceLeaf } from "obsidian";
 
-export default class MyPlugin extends Plugin {
-	onload() {
-		console.log('loading plugin');
+const config = {
+  attributes: false,
+  childList: true,
+  subtree: false,
+};
 
-		this.addRibbonIcon('dice', 'Sample Plugin', () => {
-			new Notice('This is a notice!');
-		});
+function tagNode(node: Node) {
+  if (node.nodeType === 3) {
+    return;
+  }
 
-		this.addStatusBarItem().setText('Status Bar Text');
+  const nodeEl = node as HTMLElement;
 
-		this.addCommand({
-			id: 'open-sample-modal',
-			name: 'Open Sample Modal',
-			// callback: () => {
-			// 	console.log('Simple Callback');
-			// },
-			checkCallback: (checking: boolean) => {
-				let leaf = this.app.workspace.activeLeaf;
-				if (leaf) {
-					if (!checking) {
-						new SampleModal(this.app).open();
-					}
-					return true;
-				}
-				return false;
-			}
-		});
-
-		this.addSettingTab(new SampleSettingTab(this.app, this));
-
-		this.registerEvent(this.app.on('codemirror', (cm: CodeMirror.Editor) => {
-			console.log('codemirror', cm);
-		}));
-
-		this.registerDomEvent(document, 'click', (evt: MouseEvent) => {
-			console.log('click', evt);
-		});
-
-		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
-	}
-
-	onunload() {
-		console.log('unloading plugin');
-	}
+  if (
+    !nodeEl.dataset.tagName &&
+    nodeEl.hasChildNodes() &&
+    nodeEl.firstChild.nodeType !== 3
+  ) {
+    const childEl = node.firstChild as HTMLElement;
+    nodeEl.dataset.tagName = childEl.tagName.toLowerCase();
+  }
 }
 
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
+export default class ContextualTypography extends Plugin {
+  observers: { [id: string]: MutationObserver } = {};
 
-	onOpen() {
-		let {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
+  disconnectObserver(id: string) {
+    if (this.observers[id]) {
+      this.observers[id].disconnect();
+      delete this.observers[id];
+    }
+  }
 
-	onClose() {
-		let {contentEl} = this;
-		contentEl.empty();
-	}
-}
+  connectObserver(id: string, leaf: WorkspaceLeaf) {
+    if (this.observers[id]) return;
 
-class SampleSettingTab extends PluginSettingTab {
-	display(): void {
-		let {containerEl} = this;
+    const previewSection = leaf.view.containerEl.getElementsByClassName(
+      "markdown-preview-section"
+    );
 
-		containerEl.empty();
+    if (previewSection.length) {
+      this.observers[id] = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          mutation.addedNodes.forEach(tagNode);
+        });
+      });
 
-		containerEl.createEl('h2', {text: 'Settings for my awesome plugin.'});
+      this.observers[id].observe(previewSection[0], config);
 
-		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text.setPlaceholder('Enter your secret')
-				.setValue('')
-				.onChange((value) => {
-					console.log('Secret: ' + value);
-				}));
+      setTimeout(() => {
+        previewSection[0].childNodes.forEach(tagNode);
+      }, 0);
+    }
+  }
 
-	}
+  onunload() {
+    Object.keys(this.observers).forEach((k) => this.disconnectObserver(k));
+  }
+
+  onload() {
+    this.registerEvent(
+      this.app.workspace.on("layout-change", () => {
+        const seen: { [k: string]: boolean } = {};
+
+        this.app.workspace.iterateRootLeaves((leaf) => {
+          const id = (leaf as any).id as string;
+          this.connectObserver(id, leaf);
+          seen[id] = true;
+        });
+
+        Object.keys(this.observers).forEach((k) => {
+          if (!seen[k]) {
+            this.disconnectObserver(k);
+          }
+        });
+      })
+    );
+  }
 }

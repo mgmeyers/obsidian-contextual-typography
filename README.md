@@ -1,45 +1,32 @@
-## Obsidian Sample Plugin
+# obsidian-contextual-typography
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+This plugin adds a `data-tag-name` attribute to all top-level preview `div`s, allowing contextual typography. For example:
 
-This project uses Typescript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in Typescript Definition format, which contains TSDoc comments describing what it does.
+```
+.markdown-preview-view div[data-tag-name="h1"] + div > h2 {
+  margin-top: 1.8888888889rem;
+}
 
-**Note:** The Obsidian API is still in early alpha and is subject to change at any time!
+.markdown-preview-view div[data-tag-name="h2"] + div > h3,
+.markdown-preview-view div[data-tag-name="h3"] + div > h4,
+.markdown-preview-view div[data-tag-name="h4"] + div > h5 {
+  margin-top: 0.9444444444rem;
+}
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Changes the default font color to red using `styles.css`.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+.markdown-preview-view div[data-tag-name="h5"] + div > h6 {
+  margin-top: -0.9444444444rem;
+}
+```
+
+This is specifically inspired by http://matejlatin.github.io/Gutenberg/
+
+## Sample
+
+**Before:**
+
+![Before](images/before.png)
 
 
-### Releasing new releases
+**After:**
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments.
-- Publish the release.
-
-### Adding your plugin to the community plugin list
-
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
-
-### How to use
-
-- Clone this repo.
-- `npm i` or `yarn` to install dependencies
-- `npm run dev` to start compilation in watch mode.
-
-### Manually installing the plugin
-
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
-
-### API Documentation
-
-See https://github.com/obsidianmd/obsidian-api
+![After](images/after.png)

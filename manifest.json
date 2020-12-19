@@ -1,10 +1,10 @@
 {
-	"id": "obsidian-sample-plugin",
-	"name": "Sample Plugin",
-	"version": "1.0.1",
-	"minAppVersion": "0.9.12",
-	"description": "This is a sample plugin for Obsidian. This plugin demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
+	"id": "obsidian-contextual-typography",
+	"name": "Contextual Typography",
+	"version": "1.0.0",
+	"minAppVersion": "0.9.22",
+	"description": "This plugin adds a data-tag-name attribute to all top-level divs in preview mode containing the child's tag name, allowing contextual typography styling.",
+	"author": "mgmeyers",
 	"authorUrl": "https://obsidian.md/about",
 	"isDesktopOnly": false
 }
