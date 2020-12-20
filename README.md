@@ -14,9 +14,8 @@ This is specifically inspired by http://matejlatin.github.io/Gutenberg/
 
 **Before:**
 
-![Before](images/before.png)
-
+<img src="https://github.com/mgmeyers/obsidian-contextual-typography/raw/main/images/before.png" alt="Before" width="350" />
 
 **After:**
 
-![After](images/after.png)
+<img src="https://github.com/mgmeyers/obsidian-contextual-typography/raw/main/images/after.png" alt="After" width="350" />
