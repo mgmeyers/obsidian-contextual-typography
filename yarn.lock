@@ -115,9 +115,9 @@
     "@types/node" "*"
 
 "@types/tern@*":
-  version "0.23.3"
-  resolved "https://registry.yarnpkg.com/@types/tern/-/tern-0.23.3.tgz#4b54538f04a88c9ff79de1f6f94f575a7f339460"
-  integrity sha512-imDtS4TAoTcXk0g7u4kkWqedB3E4qpjXzCpD2LU5M5NAXHzCDsypyvXSaG7mM8DKYkCRa7tFp4tS/lp/Wo7Q3w==
+  version "0.23.4"
+  resolved "https://registry.yarnpkg.com/@types/tern/-/tern-0.23.4.tgz#03926eb13dbeaf3ae0d390caf706b2643a0127fb"
+  integrity sha512-JAUw1iXGO1qaWwEOzxTKJZ/5JxVeON9kvGZ/osgZaJImBnyjyn0cjovPsf6FNLmyGY8Vw9DoXZCMlfMkMwHRWg==
   dependencies:
     "@types/estree" "*"
 
@@ -386,13 +386,13 @@ moment@2.29.1:
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
   integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
 
-"obsidian@https://github.com/obsidianmd/obsidian-api/tarball/master":
-  version "0.11.13"
-  resolved "https://github.com/obsidianmd/obsidian-api/tarball/master#69a3eff2c8aac67a8e26e5a0909262b2d5001a0c"
+obsidian@^0.12.11:
+  version "0.12.11"
+  resolved "https://registry.yarnpkg.com/obsidian/-/obsidian-0.12.11.tgz#c92fbbb29fc2d4732e156b41a66d4ba8d42baaab"
+  integrity sha512-Kv4m1n4nfd17FzpqHZfqFS2YZAyY+cxAUM7/5jqh1bmbPlmKoNd1XJZC7o9KvkXfTCxALiXfGRdrjHB+GUFAEA==
   dependencies:
     "@types/codemirror" "0.0.108"
     moment "2.29.1"
-    yaml "2.0.0-4"
 
 once@^1.3.0:
   version "1.4.0"
@@ -500,8 +500,3 @@ wrappy@1:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
   integrity sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=
-
-yaml@2.0.0-4:
-  version "2.0.0-4"
-  resolved "https://registry.yarnpkg.com/yaml/-/yaml-2.0.0-4.tgz#0b8089fecd1843d1a8eb8d0aff1470c471653e15"
-  integrity sha512-MoQoNhTFI400tkaeod+X0Vety1KD2L9dUa6pa1CVcyfcATjC/iDxoMLvqZ6U3D8c5KzxBrU2HnJH+PfaXOqI7w==
