@@ -1,3 +1,4 @@
+import { onRenderLine } from "./edit-mode"
 import { MarkdownPostProcessorContext, Plugin } from "obsidian";
 
 function tagNode(node: Node, ctx: MarkdownPostProcessorContext) {
@@ -50,5 +51,16 @@ function tagNode(node: Node, ctx: MarkdownPostProcessorContext) {
 export default class ContextualTypography extends Plugin {
   onload() {
     this.registerMarkdownPostProcessor(tagNode);
+    this.registerCodeMirror((cm: CodeMirror.Editor) => {
+      cm.on("renderLine", onRenderLine)
+      cm.refresh()
+    })
+  }
+
+  onunload() {
+    this.app.workspace.iterateCodeMirrors((cm: CodeMirror.Editor) => {
+      cm.off("renderLine", onRenderLine);
+      cm.refresh();
+    });
   }
 }
