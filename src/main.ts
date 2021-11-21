@@ -1,5 +1,67 @@
 import { MarkdownPostProcessorContext, Plugin } from "obsidian";
 
+const imageExt = ["bmp", "png", "jpg", "jpeg", "gif", "svg"];
+const audioExt = ["mp3", "wav", "m4a", "3gp", "flac", "ogg", "oga"];
+const videoExt = ["mp4", "webm", "ogv"];
+
+function isInternalEmbed(node: HTMLElement) {
+  if (node.nodeType === 3) {
+    return false;
+  }
+
+  const child = node.firstChild as HTMLElement;
+
+  return child && child.classList?.contains("internal-embed");
+}
+
+function getEmbedType(node: HTMLElement) {
+  if (node.nodeType === 3) {
+    return null;
+  }
+
+  const child = node.firstChild as HTMLElement;
+  const src = child.getAttr("src");
+
+  if (!src) {
+    return null;
+  }
+
+  const ext = src.split(".").pop();
+
+  if (imageExt.contains(ext)) return "image";
+  if (audioExt.contains(ext)) return "audio";
+  if (videoExt.contains(ext)) return "video";
+  if (/#\^[^\^]+$/.test(src)) return "block";
+  if (/#[^#]+$/.test(src)) return "heading";
+
+  return "page";
+}
+
+function isExternalImageEmbed(node: HTMLElement) {
+  if (node.nodeType === 3) {
+    return false;
+  }
+
+  const child = node.firstChild as HTMLElement;
+  return child && child.tagName?.toLowerCase() === "img";
+}
+
+function getBlockLanguage(node: HTMLElement) {
+  if (node.nodeType === 3) {
+    return null;
+  }
+
+  let lang: null | string = null;
+
+  node.classList.forEach((cls) => {
+    if (cls.startsWith("block-language")) {
+      lang = cls.replace(/^block\-language\-/, "");
+    }
+  });
+
+  return lang;
+}
+
 function tagNode(node: Node, ctx: MarkdownPostProcessorContext) {
   if (node.nodeType === 3) {
     return;
@@ -27,7 +89,25 @@ function tagNode(node: Node, ctx: MarkdownPostProcessorContext) {
       nodeEl.addClass(`tag-${tag}`);
     });
 
-    const tagName = childEl.tagName.toLowerCase();
+    let tagName = childEl.tagName.toLowerCase();
+
+    if (isExternalImageEmbed(childEl)) {
+      nodeEl.dataset.isEmbed = "true";
+      nodeEl.dataset.embedType = "image";
+      nodeEl.addClass(`el-embed-image`);
+    } else if (isInternalEmbed(childEl)) {
+      const embedType = getEmbedType(childEl);
+      nodeEl.dataset.isEmbed = "true";
+      nodeEl.dataset.embedType = embedType;
+      nodeEl.addClass(`el-embed-${embedType}`);
+    } else {
+      const blockLang = getBlockLanguage(childEl);
+
+      if (blockLang) {
+        nodeEl.dataset.blockLanguage = blockLang;
+        nodeEl.addClass(`el-lang-${blockLang}`);
+      }
+    }
 
     nodeEl.dataset.tagName = tagName;
     nodeEl.addClass(`el-${tagName}`);
