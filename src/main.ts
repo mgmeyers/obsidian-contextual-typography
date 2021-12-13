@@ -129,6 +129,11 @@ function tagNode(node: Node, ctx: MarkdownPostProcessorContext) {
 
 export default class ContextualTypography extends Plugin {
   onload() {
+    document.body.classList.add("contextual-typography");
     this.registerMarkdownPostProcessor(tagNode);
+  }
+
+  unload() {
+    document.body.classList.remove("contextual-typography");
   }
 }
