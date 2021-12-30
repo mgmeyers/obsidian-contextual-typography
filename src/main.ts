@@ -62,6 +62,31 @@ function getBlockLanguage(node: HTMLElement) {
   return lang;
 }
 
+function fixMarkdownLinkEmbeds(node: HTMLElement) {
+  if (node.children.length <= 1) {
+    return;
+  }
+
+  let embedChild: HTMLElement;
+
+  for (let i = 0, len = node.children.length; i < len; i++) {
+    const child = node.children.item(i);
+
+    if (child.classList?.contains("internal-embed")) {
+      console.log(child)
+      embedChild = child as HTMLElement;
+      break;
+    }
+  }
+
+  if (!embedChild) return;
+
+  node.empty();
+  node.createEl("p", {}, (p) => {
+    p.append(embedChild);
+  });
+}
+
 function tagNode(node: Node, ctx: MarkdownPostProcessorContext) {
   if (node.nodeType === 3) {
     return;
@@ -69,6 +94,8 @@ function tagNode(node: Node, ctx: MarkdownPostProcessorContext) {
 
   const nodeEl = node as HTMLElement;
   const isPrint = nodeEl.hasClass("markdown-preview-view");
+
+  fixMarkdownLinkEmbeds(nodeEl);
 
   if (
     !isPrint &&
