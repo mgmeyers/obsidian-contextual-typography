@@ -67,23 +67,27 @@ function fixMarkdownLinkEmbeds(node: HTMLElement) {
     return;
   }
 
-  let embedChild: HTMLElement;
+  let embedChildren: HTMLElement[] = [];
 
   for (let i = 0, len = node.children.length; i < len; i++) {
     const child = node.children.item(i);
 
     if (child.classList?.contains("internal-embed")) {
-      console.log(child)
-      embedChild = child as HTMLElement;
-      break;
+      embedChildren.push(child as HTMLElement);
     }
   }
 
-  if (!embedChild) return;
+  if (!embedChildren.length) return;
 
   node.empty();
+
   node.createEl("p", {}, (p) => {
-    p.append(embedChild);
+    embedChildren.forEach((c, i) => {
+      p.append(c);
+      if (i < embedChildren.length - 1) {
+        p.createEl("br");
+      }
+    });
   });
 }
 
