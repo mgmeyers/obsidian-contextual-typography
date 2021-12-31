@@ -67,24 +67,57 @@ function fixMarkdownLinkEmbeds(node: HTMLElement) {
     return;
   }
 
-  let embedChildren: HTMLElement[] = [];
+  let containsNakedEmbed = false;
+  let childNodes: ChildNode[] = [];
 
-  for (let i = 0, len = node.children.length; i < len; i++) {
-    const child = node.children.item(i);
+  node.childNodes.forEach((n) => {
+    if (n.nodeValue === "\n") return;
 
-    if (child.classList?.contains("internal-embed")) {
-      embedChildren.push(child as HTMLElement);
+    switch (n.nodeName) {
+      case "P": {
+        if ((n as HTMLElement).children.length === 0) {
+          return;
+        } else {
+          n.childNodes.forEach((pn) => {
+            if (pn.nodeName !== "BR" && pn.nodeValue !== "\n")
+              childNodes.push(pn);
+          });
+          return;
+        }
+      }
+      case "BR": {
+        return;
+      }
     }
-  }
 
-  if (!embedChildren.length) return;
+    if (
+      n.nodeType === 1 &&
+      (n as HTMLElement).classList?.contains("internal-embed")
+    ) {
+      containsNakedEmbed = true;
+    }
+
+    childNodes.push(n);
+  });
+
+  if (!containsNakedEmbed) return;
 
   node.empty();
-
   node.createEl("p", {}, (p) => {
-    embedChildren.forEach((c, i) => {
+    childNodes.forEach((c, i, arr) => {
       p.append(c);
-      if (i < embedChildren.length - 1) {
+
+      const nodeIsEmbed =
+        c.nodeType === 1 &&
+        !!(c as HTMLElement).getAttribute("src") &&
+        i < arr.length - 1;
+
+      const nodeIsTextFollowedByEmbed =
+        c.nodeType === 3 &&
+        arr[i + 1]?.nodeType === 1 &&
+        !!(arr[i + 1] as HTMLElement).getAttribute("src");
+
+      if (nodeIsEmbed || nodeIsTextFollowedByEmbed) {
         p.createEl("br");
       }
     });
