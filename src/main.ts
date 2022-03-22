@@ -1,6 +1,6 @@
 import { MarkdownPostProcessorContext, Plugin } from "obsidian";
 
-const imageExt = ["bmp", "png", "jpg", "jpeg", "gif", "svg"];
+const imageExt = ["bmp", "png", "jpg", "jpeg", "gif", "svg", "webp"];
 const audioExt = ["mp3", "wav", "m4a", "3gp", "flac", "ogg", "oga"];
 const videoExt = ["mp4", "webm", "ogv"];
 
