@@ -26,7 +26,7 @@ function getEmbedType(node: HTMLElement) {
     return null;
   }
 
-  const ext = src.split(".").pop();
+  const ext = src.split(".").pop()?.toLowerCase();
 
   if (imageExt.contains(ext)) return "image";
   if (audioExt.contains(ext)) return "audio";
