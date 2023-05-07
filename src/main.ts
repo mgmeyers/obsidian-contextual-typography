@@ -132,14 +132,14 @@ function tagNode(node: Node, ctx: MarkdownPostProcessorContext) {
   const nodeEl = node as HTMLElement;
   const isPrint = nodeEl.hasClass("markdown-preview-view");
 
-  fixMarkdownLinkEmbeds(nodeEl);
-
   if (
     !isPrint &&
     !nodeEl.dataset.tagName &&
     nodeEl.hasChildNodes() &&
     nodeEl.firstChild.nodeType !== 3
   ) {
+    fixMarkdownLinkEmbeds(nodeEl);
+
     const childEl = node.firstChild as HTMLElement;
 
     Object.keys(childEl.dataset).forEach(
